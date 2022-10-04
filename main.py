@@ -18,9 +18,14 @@ classNames = f.read().split('\n')
 f.close()
 print(classNames)
 
+words = [' ']
+last = ''
+newWords = []
 
 # Initialize the webcam
 cap = cv2.VideoCapture(0)
+
+listClassName = ['...']
 
 while True:
     # Read each frame from the webcam
@@ -36,7 +41,7 @@ while True:
     result = hands.process(framergb)
 
     # print(result)
-    
+
     className = ''
 
     # post process the result
@@ -60,18 +65,21 @@ while True:
             className = classNames[classID]
 
     # show the prediction on the frame
-    cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 
-                   1, (0,0,255), 2, cv2.LINE_AA)
-    
-    # write on text file
-    with open('write.txt', 'a') as file:
-        file.write(className + '\n')
+    cv2.putText(frame, className, (200, 450), cv2.FONT_HERSHEY_DUPLEX,
+                1.2, (0, 255, 255), 2, cv2.LINE_AA)
 
     # Show the final output
-    cv2.imshow("Output", frame) 
+    cv2.imshow("Output", frame)
 
     if cv2.waitKey(1) == ord('q'):
         break
+
+    if words[-1] != className:
+        words.append(className)
+        if className != last:
+            print(className)
+            with open('write.txt', 'a') as file:
+                file.write(className + ' ')
 
 # release the webcam and destroy all active windows
 cap.release()
